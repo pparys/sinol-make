@@ -58,11 +58,11 @@ class Command(BaseCommand):
         """
         output_file = paths.get_chkwer_path(os.path.basename(execution.out_test_path))
         with open(execution.in_test_path, 'r') as inf, open(output_file, 'w') as outf:
-            process = subprocess.Popen([execution.model_exe], stdin=inf, stdout=outf)
-            process.wait()
-        ok, points, comment, stderr = self.task_type.check_output(execution.in_test_path, output_file, execution.out_test_path)
+            process = subprocess.Popen([execution.model_exe], stdin=inf, stdout=outf, stderr=subprocess.PIPE)
+            _, stderr = process.communicate()
+        ok, points, comment, checker_stderr = self.task_type.check_output(execution.in_test_path, output_file, execution.out_test_path)
 
-        return RunResult(execution.in_test_path, ok, int(points), comment, stderr)
+        return RunResult(execution.in_test_path, ok, int(points), comment, stderr.decode('utf-8'))
 
     def run_and_print_table(self, args) -> Dict[str, TestResult]:
         results = {}
