@@ -157,6 +157,11 @@ def get_large_output_package_path():
     return os.path.join(os.path.dirname(__file__), "packages", "large_output")
 
 
+def get_rust_package_path():
+    """Get path to Rust test package (/tests/packages/rus)"""
+    return os.path.join(os.path.dirname(__file__), "packages", "rus")
+
+
 def get_ocen_package_path():
     """
     Get path to package for testing ocen archive creation (/tests/packages/ocen)

@@ -23,7 +23,8 @@ def get_command(path = None):
         c_compiler_path=compiler.get_c_compiler_path(),
         cpp_compiler_path=compiler.get_cpp_compiler_path(),
         python_interpreter_path=compiler.get_python_interpreter_path(),
-        java_compiler_path=compiler.get_java_compiler_path()
+        java_compiler_path=compiler.get_java_compiler_path(),
+        rust_compiler_path=compiler.get_rust_compiler_path(),
     )
     with open(os.path.join(path, "config.yml"), "r") as config_file:
         command.config = yaml.load(config_file, Loader=yaml.FullLoader)

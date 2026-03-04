@@ -98,6 +98,11 @@ def compile(program, output, compilers: Compilers = None, compile_log=None, comp
             st = os.stat(output)
             os.chmod(output, st.st_mode | stat.S_IEXEC)
         arguments = [compilers.python_interpreter_path, '-m', 'py_compile', program]
+    elif ext == '.rs':
+        arguments = [compilers.rust_compiler_path or compiler.get_rust_compiler_path(), program,
+                     '-o', output, '-O', '--edition=2024',
+                     '-C', 'target-feature=+crt-static', '-C', 'strip=debuginfo', '-C', 'strip=symbols'] + \
+                    extra_compilation_args
     elif ext == '.java':
         raise NotImplementedError('Java compilation is not implemented')
     else:

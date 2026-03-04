@@ -23,7 +23,7 @@ jobs:
       - name: Prepare system
         run: |
           sysctl kernel.perf_event_paranoid=-1
-          pacman -Syu --noconfirm diffutils time gcc dpkg ghostscript texlive-latexextra git
+          pacman -Syu --noconfirm diffutils time gcc dpkg ghostscript texlive-latexextra git rust
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:

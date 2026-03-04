@@ -27,7 +27,9 @@ jobs:
       - name: Prepare system
         run: |
           apt update
-          apt install -y sqlite3 sqlite3-doc build-essential dpkg texlive-latex-extra ghostscript git
+          apt install -y sqlite3 sqlite3-doc build-essential dpkg texlive-latex-extra ghostscript git curl
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           sysctl kernel.perf_event_paranoid=-1
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
