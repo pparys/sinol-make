@@ -72,8 +72,8 @@ class InteractiveTaskType(BaseTaskType):
     def name() -> str:
         return "interactive"
 
-    def __init__(self, timetool, sio2jail_path):
-        super().__init__(timetool, sio2jail_path)
+    def __init__(self, timetool, sio2jail_path, fake_time=None):
+        super().__init__(timetool, sio2jail_path, fake_time=fake_time)
         self.has_checker = False
         self.interactor = None
         self.interactor_executor = DetailedExecutor()

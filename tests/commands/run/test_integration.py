@@ -903,7 +903,8 @@ def test_invalid_fake_time(capsys, create_package, time_tool):
 
 
 @pytest.mark.parametrize("create_package", [get_simple_package_path()], indirect=True)
-def test_valid_fake_time(create_package, time_tool):
+@pytest.mark.parametrize("fake_time_value", ["off", "zero", "random"])
+def test_valid_fake_time(create_package, fake_time_value):
     """
     Test that a valid fake_time value in config.yml does not cause run to fail.
     """
@@ -913,11 +914,11 @@ def test_valid_fake_time(create_package, time_tool):
     config_path = os.path.join(package_path, "config.yml")
     with open(config_path, "r") as config_file:
         config = yaml.load(config_file, Loader=yaml.SafeLoader)
-    config["fake_time"] = "off"
+    config["fake_time"] = fake_time_value
     with open(config_path, "w") as config_file:
         config_file.write(yaml.dump(config))
 
     parser = configure_parsers()
-    args = parser.parse_args(["run", "--time-tool", time_tool])
+    args = parser.parse_args(["run", "--time-tool", "time"])
     command = Command()
     command.run(args)
