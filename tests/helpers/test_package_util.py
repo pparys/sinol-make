@@ -284,3 +284,20 @@ def test_get_solutions():
         assert package_util.get_solutions("abc", ["prog/abc.cpp", "abc1.cpp"]) == ["abc.cpp", "abc1.cpp"]
         assert package_util.get_solutions("abc", ["prog/abc.cpp", "abc?.cpp"]) == ["abc.cpp", "abc1.cpp", "abc2.cpp"]
         assert package_util.get_solutions("abc", ["abc.cpp", "abc2.cpp", "abcs2.cpp"]) == ["abc.cpp", "abc2.cpp", "abcs2.cpp"]
+
+
+def test_validate_fake_time():
+    """
+    Test that validate_fake_time accepts valid values and rejects invalid ones.
+    """
+    # Valid values should not raise.
+    for value in ('off', 'zero', 'random'):
+        package_util.validate_fake_time({'fake_time': value})
+
+    # Missing key should not raise.
+    package_util.validate_fake_time({})
+
+    # Invalid values should exit.
+    for value in ('on', 'invalid', '', 'Off', 'ZERO'):
+        with pytest.raises(SystemExit):
+            package_util.validate_fake_time({'fake_time': value})

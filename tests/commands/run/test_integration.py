@@ -875,3 +875,49 @@ def test_interactive(create_package, time_tool, capsys):
     out = capsys.readouterr().out
     for comment in comments:
         assert comment not in out, f"Comment {comment} found in output."
+
+
+@pytest.mark.parametrize("create_package", [get_simple_package_path()], indirect=True)
+def test_invalid_fake_time(capsys, create_package, time_tool):
+    """
+    Test that an invalid fake_time value in config.yml causes run to fail.
+    """
+    package_path = create_package
+    create_ins_outs(package_path)
+
+    config_path = os.path.join(package_path, "config.yml")
+    with open(config_path, "r") as config_file:
+        config = yaml.load(config_file, Loader=yaml.SafeLoader)
+    config["fake_time"] = "invalid"
+    with open(config_path, "w") as config_file:
+        config_file.write(yaml.dump(config))
+
+    parser = configure_parsers()
+    args = parser.parse_args(["run", "--time-tool", time_tool])
+    command = Command()
+    with pytest.raises(SystemExit):
+        command.run(args)
+
+    out = capsys.readouterr().out
+    assert "Invalid value for fake_time" in out
+
+
+@pytest.mark.parametrize("create_package", [get_simple_package_path()], indirect=True)
+def test_valid_fake_time(create_package, time_tool):
+    """
+    Test that a valid fake_time value in config.yml does not cause run to fail.
+    """
+    package_path = create_package
+    create_ins_outs(package_path)
+
+    config_path = os.path.join(package_path, "config.yml")
+    with open(config_path, "r") as config_file:
+        config = yaml.load(config_file, Loader=yaml.SafeLoader)
+    config["fake_time"] = "off"
+    with open(config_path, "w") as config_file:
+        config_file.write(yaml.dump(config))
+
+    parser = configure_parsers()
+    args = parser.parse_args(["run", "--time-tool", time_tool])
+    command = Command()
+    command.run(args)
