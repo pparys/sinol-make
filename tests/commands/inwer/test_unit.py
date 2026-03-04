@@ -43,7 +43,8 @@ def test_asserting_inwer(create_package):
         c_compiler_path=compiler.get_c_compiler_path(),
         cpp_compiler_path=compiler.get_cpp_compiler_path(),
         python_interpreter_path=compiler.get_python_interpreter_path(),
-        java_compiler_path=compiler.get_java_compiler_path()
+        java_compiler_path=compiler.get_java_compiler_path(),
+        rust_compiler_path=compiler.get_rust_compiler_path(),
     )
     executable = inwer_util.compile_inwer(inwer_path, args)
 
