@@ -15,7 +15,8 @@ from sinol_make import configure_parsers, util, sio2jail
                                             get_checker_package_path(), get_library_package_path(),
                                             get_library_string_args_package_path(), get_limits_package_path(),
                                             get_override_limits_package_path(), get_icpc_package_path(),
-                                            get_long_solution_names_package(), get_large_output_package_path()],
+                                            get_long_solution_names_package(), get_large_output_package_path(),
+                                            get_rust_package_path()],
                          indirect=True)
 def test_simple(create_package, time_tool):
     """

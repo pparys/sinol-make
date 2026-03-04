@@ -90,6 +90,18 @@ def get_java_compiler_path():
         return 'javac'
 
 
+@cache_result()
+def get_rust_compiler_path():
+    """
+    Get the Rust compiler
+    """
+
+    if not check_if_installed('rustc'):
+        return None
+    else:
+        return 'rustc'
+
+
 def get_default_compilers():
     """
     Get the default compilers
@@ -98,6 +110,7 @@ def get_default_compilers():
         c_compiler_path=get_c_compiler_path(),
         cpp_compiler_path=get_cpp_compiler_path(),
         python_interpreter_path=get_python_interpreter_path(),
+        rust_compiler_path=get_rust_compiler_path(),
         # Java is not currently supported by sinol-make
         # java_compiler_path=get_java_compiler_path()
     )
@@ -137,6 +150,10 @@ def verify_compilers(args: argparse.Namespace, solutions: List[str]) -> Compiler
             compiler = 'Java compiler'
             flag = '--java-compiler-path'
             tried = 'javac'
+        elif ext == '.rs' and args.rust_compiler_path is None:
+            compiler = 'Rust compiler'
+            flag = '--rust-compiler-path'
+            tried = 'rustc'
 
         if compiler != "":
             util.exit_with_error(
@@ -146,5 +163,6 @@ def verify_compilers(args: argparse.Namespace, solutions: List[str]) -> Compiler
         c_compiler_path=args.c_compiler_path,
         cpp_compiler_path=args.cpp_compiler_path,
         python_interpreter_path=args.python_interpreter_path,
-        java_compiler_path=None
+        java_compiler_path=None,
+        rust_compiler_path=args.rust_compiler_path,
     )

@@ -753,7 +753,7 @@ class Command(BaseCommand):
 
     def set_constants(self):
         self.ID = package_util.get_task_id()
-        self.SOURCE_EXTENSIONS = ['.c', '.cpp', '.py', '.java']
+        self.SOURCE_EXTENSIONS = ['.c', '.cpp', '.py', '.java', '.rs']
         self.SOLUTIONS_RE = package_util.get_solutions_re(self.ID)
 
     def validate_arguments(self, args):

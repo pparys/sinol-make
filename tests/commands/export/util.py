@@ -15,6 +15,7 @@ def get_command():
         cpp_compiler_path=compiler.get_cpp_compiler_path(),
         python_interpreter_path=compiler.get_python_interpreter_path(),
         java_compiler_path=compiler.get_java_compiler_path(),
+        rust_compiler_path=compiler.get_rust_compiler_path(),
     )
     command.export_dir = os.path.join(os.getcwd(), "export")
     if not os.path.exists(command.export_dir):
