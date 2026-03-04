@@ -281,6 +281,7 @@ class Command(BaseCommand):
             util.exit_with_error(str(e))
 
         config = package_util.get_config()
+        package_util.validate_fake_time(config)
 
         export_package_path = paths.get_cache_path('export', self.task_id)
         if os.path.exists(export_package_path):

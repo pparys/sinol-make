@@ -425,9 +425,18 @@ def get_task_type_cls() -> Type[BaseTaskType]:
     return BaseTaskType.get_task_type()
 
 
-def get_task_type(timetool_name, timetool_path) -> BaseTaskType:
+def validate_fake_time(config):
+    if 'fake_time' in config:
+        allowed = ('off', 'zero', 'random')
+        if config['fake_time'] not in allowed:
+            util.exit_with_error(
+                f'Invalid value for fake_time in config.yml: "{config["fake_time"]}". '
+                f'Allowed values: {", ".join(allowed)}.')
+
+
+def get_task_type(timetool_name, timetool_path, fake_time=None) -> BaseTaskType:
     task_type_cls = get_task_type_cls()
-    return task_type_cls(timetool_name, timetool_path)
+    return task_type_cls(timetool_name, timetool_path, fake_time)
 
 
 def get_out_from_in(test) -> str:
