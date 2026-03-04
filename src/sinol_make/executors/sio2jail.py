@@ -11,15 +11,17 @@ from sinol_make.structs.status_structs import ExecutionResult, Status
 
 
 class Sio2jailExecutor(BaseExecutor):
-    def __init__(self, sio2jail_path):
+    def __init__(self, sio2jail_path, fake_time=None):
         super().__init__()
         self.sio2jail_path = sio2jail_path
+        self.fake_time = fake_time
 
     def _wrap_command(self, command: List[str], result_file_path: str, time_limit: int, memory_limit: int) -> List[str]:
         # see: https://github.com/sio2project/sioworkers/blob/738aa7a4e93216b0900ca128d6d48d40cd38bc1e/sio/workers/executors.py#L608
+        fake_time_args = ['--fake-time', self.fake_time] if self.fake_time is not None else []
         return [f'"{self.sio2jail_path}"', '-f', '3', '--mount-namespace', 'off', '--pid-namespace', 'off', '--uts-namespace',
                 'off', '--ipc-namespace', 'off', '--net-namespace', 'off', '--capability-drop', 'off',
-                '--user-namespace', 'off', '--instruction-count-limit', f'{int(2 * time_limit)}M',
+                '--user-namespace', 'off'] + fake_time_args + ['--instruction-count-limit', f'{int(2 * time_limit)}M',
                 '--rtimelimit', f'{int(16 * time_limit + 1000)}ms', '--memory-limit', f'{int(memory_limit)}K',
                 '--output-limit', '51200K', '--output', 'oiaug', '--stderr', '--'] + command + \
                 ['3>', f'"{result_file_path}"']

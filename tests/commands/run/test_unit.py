@@ -4,6 +4,7 @@ from sinol_make import util, sio2jail
 from sinol_make.structs.status_structs import Status, ResultChange, ValidationResult
 from sinol_make.helpers import package_util
 from sinol_make.task_type.normal import NormalTaskType
+from sinol_make.executors.sio2jail import Sio2jailExecutor
 
 from .util import *
 from ...util import *
@@ -473,3 +474,23 @@ def test_update_group_status():
     assert update_group_status(Status.PENDING, Status.WA) == Status.WA
     assert update_group_status(Status.WA, Status.CE) == Status.CE
     assert update_group_status(Status.CE, Status.WA) == Status.CE
+
+
+def test_sio2jail_wrap_command_fake_time():
+    """
+    Test that Sio2jailExecutor._wrap_command includes --fake-time when set.
+    """
+    executor = Sio2jailExecutor("/usr/bin/sio2jail", fake_time="random")
+    cmd = executor._wrap_command(["./solution"], "/tmp/result", 1000, 262144)
+    assert '--fake-time' in cmd
+    fake_time_idx = cmd.index('--fake-time')
+    assert cmd[fake_time_idx + 1] == 'random'
+
+    executor_off = Sio2jailExecutor("/usr/bin/sio2jail", fake_time="off")
+    cmd_off = executor_off._wrap_command(["./solution"], "/tmp/result", 1000, 262144)
+    assert '--fake-time' in cmd_off
+    assert cmd_off[cmd_off.index('--fake-time') + 1] == 'off'
+
+    executor_none = Sio2jailExecutor("/usr/bin/sio2jail")
+    cmd_none = executor_none._wrap_command(["./solution"], "/tmp/result", 1000, 262144)
+    assert '--fake-time' not in cmd_none

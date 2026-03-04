@@ -54,7 +54,7 @@ class BaseTaskType(RegisteredSubclassesBase):
         with open(paths.get_cache_path("task_type"), "w") as f:
             f.write(name)
 
-    def __init__(self, timetool, sio2jail_path):
+    def __init__(self, timetool, sio2jail_path, fake_time=None):
         super().__init__()
         self.timetool = timetool
         self.sio2jail_path = sio2jail_path
@@ -64,7 +64,7 @@ class BaseTaskType(RegisteredSubclassesBase):
         if self.timetool == 'time':
             self.executor = TimeExecutor()
         elif self.timetool == 'sio2jail':
-            self.executor = Sio2jailExecutor(sio2jail_path)
+            self.executor = Sio2jailExecutor(sio2jail_path, fake_time)
         else:
             util.exit_with_error(f"Unknown timetool {self.timetool}")
         self._check_task_type_changed()

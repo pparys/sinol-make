@@ -923,8 +923,8 @@ class Command(BaseCommand):
         if not any_comments:
             print("No comments.")
 
-    def set_task_type(self, timetool_name, timetool_path):
-        self.task_type = package_util.get_task_type(timetool_name, timetool_path)
+    def set_task_type(self, timetool_name, timetool_path, fake_time=None):
+        self.task_type = package_util.get_task_type(timetool_name, timetool_path, fake_time)
 
     def compile_additional_files(self):
         additional_files = self.task_type.additional_files_to_compile()
@@ -948,6 +948,7 @@ class Command(BaseCommand):
 
         if not 'title' in self.config.keys():
             util.exit_with_error('Title was not defined in config.yml.')
+        package_util.validate_fake_time(self.config)
 
         self.compilers, self.timetool_path, self.timetool_name = self.validate_arguments(args)
 
@@ -958,7 +959,7 @@ class Command(BaseCommand):
         cache.process_extra_execution_files(self.config.get("extra_execution_files", {}), self.ID)
         cache.remove_results_if_contest_type_changed(self.config.get("sinol_contest_type", "default"))
 
-        self.set_task_type(self.timetool_name, self.timetool_path)
+        self.set_task_type(self.timetool_name, self.timetool_path, self.config.get('fake_time'))
         self.compile_additional_files()
 
         lib = package_util.get_files_matching_pattern(self.ID, f'{self.ID}lib.*')

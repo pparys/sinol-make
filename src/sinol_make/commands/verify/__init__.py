@@ -148,6 +148,7 @@ class Command(BaseCommand):
         self.task_id = package_util.get_task_id()
         self.contest = contest_types.get_contest_type()
 
+        package_util.validate_fake_time(self.config)
         self.correct_contest_type()
         self.remove_cache()
         self.check_extra_files()
