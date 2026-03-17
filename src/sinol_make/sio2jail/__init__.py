@@ -26,7 +26,7 @@ def check_sio2jail(path=None):
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, _ = sio2jail.communicate()
         out = out.decode(sys.stdout.encoding)
-        if not out.startswith("SIO2jail v1.5.0 "):
+        if not out.startswith("SIO2jail v1.5.3 "):
             return False
     except FileNotFoundError:
         return False
