@@ -1,8 +1,7 @@
 import os
+import stat
 import subprocess
 import sys
-import shutil
-import tarfile
 import tempfile
 import requests
 
@@ -47,7 +46,7 @@ def install_sio2jail(directory=None):
 
     os.makedirs(directory, exist_ok=True)
 
-    url = 'https://oij.edu.pl/zawodnik/srodowisko/oiejq.tar.gz'
+    url = 'https://github.com/sio2project/sio2jail/releases/download/v1.5.3/sio2jail'
     try:
         request = requests.get(url)
     except requests.exceptions.ConnectionError:
@@ -55,18 +54,9 @@ def install_sio2jail(directory=None):
     if request.status_code != 200:
         util.exit_with_error('Couldn\'t download sio2jail ({url} returned status code: ' + str(request.status_code) + ')')
 
-    # oiejq is downloaded to a temporary directory and not to the `.cache` dir,
-    # as there is no guarantee that the current directory is the package directory.
-    # The `.cache` dir is only used for files that are part of the package and those
-    # that the package creator might want to look into.
-    with tempfile.TemporaryDirectory() as tmpdir:
-        oiejq_path = os.path.join(tmpdir, 'oiejq.tar.gz')
-        with open(oiejq_path, 'wb') as oiejq_file:
-            oiejq_file.write(request.content)
-
-        with tarfile.open(oiejq_path) as tar:
-            util.extract_tar(tar, tmpdir)
-        shutil.copy(os.path.join(tmpdir, 'oiejq', 'sio2jail'), directory)
+    with open(path, 'wb') as f:
+        f.write(request.content)
+    os.chmod(path, os.stat(path).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
     check_sio2jail(path)
     print(util.info(f'`sio2jail` was successfully installed in `{path}`'))
