@@ -2,6 +2,7 @@ import os
 import glob
 import argparse
 import subprocess
+import shutil
 
 from sinol_make import util
 from sinol_make.helpers import package_util, paths
@@ -49,16 +50,49 @@ class Command(BaseCommand):
             return False
         return True
 
+    def compile_latexmk(self, file_path, compiler):
+        option = "-pdf" if compiler=='pdflatex' else ("-lualatex" if compiler=='lualatex' else "")
+        display = option if option else 'to dvi'
+        print(f'Compiling {os.path.basename(file_path)} (latexmk {option})...')
+        output_dir = paths.get_cache_path('doc_logs')
+        os.chdir(os.path.dirname(file_path))
+        args = ['latexmk', file_path, "-outdir=" + output_dir] + ([option] if option else [])
+        subprocess.run(args)
+        target_pdf = os.path.splitext(file_path)[0] + '.pdf'
+        file_name = os.path.splitext(os.path.basename(file_path))[0]
+        if option:
+            pdf_file = os.path.join(output_dir, file_name + '.pdf')
+            if not os.path.exists(pdf_file):
+                print(util.error('Compilation failed.'))
+                return False
+            shutil.copy2(pdf_file, target_pdf)
+        else:
+            dvi_file = os.path.join(output_dir, file_name + '.dvi')
+            if not os.path.exists(dvi_file):
+                print(util.error('Compilation failed.'))
+                return False
+            process = subprocess.run(['dvipdf', dvi_file, target_pdf])
+            if process.returncode != 0:
+                print(util.error('Compilation failed.'))
+                return False
+        print(util.info(f'Compilation successful for file {os.path.basename(file_path)}.'))
+        return True
+
+
     def make_file(self, file_path):
         """
         Compile the file two times to get the references right.
         """
-        if self.compilation_method in ('pdflatex', 'lualatex'):
-            return self.compile_pdf_latex(file_path, self.compilation_method)
+        if shutil.which("latexmk") is not None:
+            return self.compile_latexmk(file_path, self.compilation_method)
         else:
-            if not self.compile_file_latex_div(file_path):
-                return False
-            return self.compile_file_latex_div(file_path)
+            print(util.warning("latexmk not found, using traditional compilation method"))
+            if self.compilation_method in ('pdflatex', 'lualatex'):
+                return self.compile_pdf_latex(file_path, self.compilation_method)
+            else:
+                if not self.compile_file_latex_div(file_path):
+                    return False
+                return self.compile_file_latex_div(file_path)
 
     def move_logs(self):
         output_dir = paths.get_cache_path('doc_logs')
@@ -122,12 +156,12 @@ class Command(BaseCommand):
             print(util.warning('No files to compile.'))
             return
 
-        original_cwd = os.getcwd()
         failed = []
         for file in self.files:
+            original_cwd = os.getcwd()
             if not self.make_file(file):
                 failed.append(file)
-        os.chdir(original_cwd)
+            os.chdir(original_cwd)
 
         self.move_logs()
         if failed:
