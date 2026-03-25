@@ -105,7 +105,7 @@ class Command(BaseCommand):
 
         if sanitizer_error:
             print(util.warning('Warning: if inwer failed due to sanitizer errors, you can either run '
-                               '`sudo sysctl vm.mmap_rnd_bits = 28` to fix this or disable sanitizers with the '
+                               '`sudo sysctl vm.mmap_rnd_bits=28` to fix this or disable sanitizers with the '
                                '--no-fsanitize flag.'))
         if keyboard_interrupt:
             util.exit_with_error('Keyboard interrupt.')
