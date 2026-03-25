@@ -36,6 +36,9 @@ class Command(BaseCommand):
                             help='allow export without statement')
         parser.add_argument('--export-ocen', dest='export_ocen', action='store_true',
                             help='Create ocen archive')
+        parser.add_argument('--latex-compiler', dest='latex_compiler', choices=['auto', 'pdflatex', 'latex_dvi', 'lualatex'],
+                            help='Compiler used to compile documents. Available options: '
+                                 'auto (default), pdflatex, lualatex, latex_dvi.', default=argparse.SUPPRESS)
         parsers.add_compilation_arguments(parser)
         return parser
 
@@ -137,6 +140,8 @@ class Command(BaseCommand):
         command = DocCommand()
         doc_args = argparse.Namespace()
         doc_args.files = [f'./doc/{self.task_id}zad.tex']
+        if hasattr(self.args, 'latex_compiler'):
+            doc_args.latex_compiler = self.args.latex_compiler
         command.run(doc_args)
         if not os.path.isfile(f'./doc/{self.task_id}zad.pdf') and not self.args.no_statement:
             util.exit_with_error('There is no pdf statements. If this intentional, export with flag "--no-statement". '

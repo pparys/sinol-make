@@ -49,6 +49,9 @@ class Command(BaseCommand):
                                  'the expected scores are not compared with the actual scores. '
                                  'This flag will be passed to the run command.')
         parsers.add_time_tool_argument(parser)
+        parser.add_argument('--latex-compiler', dest='latex_compiler', choices=['auto', 'pdflatex', 'latex_dvi', 'lualatex'],
+                            help='Compiler used to compile documents. Available options: '
+                                 'auto (default), pdflatex, lualatex, latex_dvi.', default=argparse.SUPPRESS)
         parsers.add_compilation_arguments(parser)
         parser.add_argument('--no-gen', action='store_true', default=False,
                             help='do not generate tests')
