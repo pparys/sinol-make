@@ -38,7 +38,7 @@ def add_compilation_arguments(parser: argparse.ArgumentParser, custom_sanitize_h
                              ' no - no sanitizers\n'
                              ' simple - use address and undefined sanitizer\n'
                              ' full - use a lot of sanitizers, full list: https://codeforces.com/blog/entry/15547\n'
-                             'Sanitizers may fail on some systems. To fix this, run `sudo sysctl vm.mmap_rnd_bits = 28`. ' + \
+                             'Sanitizers may fail on some systems. To fix this, run `sudo sysctl vm.mmap_rnd_bits=28`. ' + \
                                  custom_sanitize_help,)
 
 
@@ -52,7 +52,7 @@ def add_cpus_argument(parser: argparse.ArgumentParser, help: str):
 def add_fsanitize_argument(parser: argparse.ArgumentParser):
     parser.add_argument('-f', '--fsanitize', default=False, action='store_true',
                         help='Use -fsanitize=address,undefined for compilation. Warning: this may fail on some '
-                             'systems. Tof fix this, run `sudo sysctl vm.mmap_rnd_bits = 28`.')
+                             'systems. To fix this, run `sudo sysctl vm.mmap_rnd_bits=28`.')
 
 
 def add_time_tool_argument(parser: argparse.ArgumentParser):

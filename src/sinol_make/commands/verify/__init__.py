@@ -33,7 +33,7 @@ class Command(BaseCommand):
                         'verify the config, generate tests, generate problem '
                         'statements, run inwer and run all solutions. '
                         'Ingen and inwer are compiled with sanitizers (-fsanitize=address,undefined), '
-                        'which may fail on some systems. To fix this, run `sudo sysctl vm.mmap_rnd_bits = 28` '
+                        'which may fail on some systems. To fix this, run `sudo sysctl vm.mmap_rnd_bits=28` '
                         'or disable sanitizers with --no-fsanitize.'
         )
 
