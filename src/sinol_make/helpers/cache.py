@@ -23,6 +23,11 @@ def get_cache_file(solution_path: str) -> CacheFile:
                 return CacheFile()
             try:
                 return CacheFile.from_dict(data)
+            except KeyError:
+                print(util.warning(f"Cache file for program {os.path.basename(solution_path)} is corrupted. "
+                                   f"Removing it, no action required."))
+                os.unlink(cache_file_path)
+                return CacheFile()
             except ValueError as exc:
                 print(util.error(f"An error occured while parsing cache file for solution {os.path.basename(solution_path)}."))
                 util.exit_with_error(str(exc))
