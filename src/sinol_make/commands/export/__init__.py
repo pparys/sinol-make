@@ -139,7 +139,7 @@ class Command(BaseCommand):
     def compile_statement(self):
         command = DocCommand()
         doc_args = argparse.Namespace()
-        doc_args.files = [f'./doc/{self.task_id}zad.tex']
+        doc_args.files = []
         if hasattr(self.args, 'latex_compiler'):
             doc_args.latex_compiler = self.args.latex_compiler
         command.run(doc_args)
