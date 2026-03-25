@@ -136,7 +136,7 @@ def test_fsanitize(create_package):
         pytest.skip("-fsanitize=address,undefined is not supported on Apple Silicon")
     for inwer in ["prog/werinwer5.cpp", "prog/werinwer6.cpp"]:
         parser = configure_parsers()
-        args = parser.parse_args(["inwer", "--fsanitize", inwer])
+        args = parser.parse_args(["inwer", "--sanitize", "simple", inwer])
         command = Command()
         with pytest.raises(SystemExit) as e:
             command.run(args)

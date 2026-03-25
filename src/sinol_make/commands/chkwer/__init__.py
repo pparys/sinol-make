@@ -43,7 +43,7 @@ class Command(BaseCommand):
         print(f'Compiling {name}... ', end='')
         compilers = compiler.verify_compilers(args, [file_path])
         exe, compile_log_path = compile.compile_file(file_path, exe_path, compilers, compilation_flags,
-                                                     use_fsanitize=False, use_extras=False)
+                                                     use_sanitizers=self.args.sanitize, use_extras=False)
         if exe is None:
             print(util.error('ERROR'))
             compile.print_compile_log(compile_log_path)
@@ -58,11 +58,11 @@ class Command(BaseCommand):
         """
         output_file = paths.get_chkwer_path(os.path.basename(execution.out_test_path))
         with open(execution.in_test_path, 'r') as inf, open(output_file, 'w') as outf:
-            process = subprocess.Popen([execution.model_exe], stdin=inf, stdout=outf)
-            process.wait()
-        ok, points, comment, stderr = self.task_type.check_output(execution.in_test_path, output_file, execution.out_test_path)
+            process = subprocess.Popen([execution.model_exe], stdin=inf, stdout=outf, stderr=subprocess.PIPE)
+            _, stderr = process.communicate()
+        ok, points, comment, checker_stderr = self.task_type.check_output(execution.in_test_path, output_file, execution.out_test_path)
 
-        return RunResult(execution.in_test_path, ok, int(points), comment, stderr)
+        return RunResult(execution.in_test_path, ok, int(points), comment, stderr.decode('utf-8'))
 
     def run_and_print_table(self, args) -> Dict[str, TestResult]:
         results = {}
@@ -100,7 +100,7 @@ class Command(BaseCommand):
         return results
 
     def run(self, args):
-        args = util.init_package_command(args)
+        self.args = util.init_package_command(args)
         self.task_id = package_util.get_task_id()
         self.task_type = package_util.get_task_type("time", None)
         self.contest_type = contest_types.get_contest_type()

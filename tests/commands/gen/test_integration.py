@@ -246,7 +246,7 @@ def test_fsanitize(create_package):
         pytest.skip("-fsanitize=address,undefined is not supported on Apple Silicon")
     for ingen in ["prog/geningen3.cpp", "prog/geningen4.cpp"]:
         with pytest.raises(SystemExit) as e:
-            simple_run(["--fsanitize", ingen])
+            simple_run(["--sanitize", "simple", ingen])
         assert e.type == SystemExit
         assert e.value.code == 1
 
@@ -403,7 +403,7 @@ def test_cache_remove_after_flags_change(create_package):
     # Generate cache
     simple_run(command="gen")
     random_key_to_cache()
-    simple_run(["--fsanitize"], command="gen")
+    simple_run(["--sanitize", "simple"], command="gen")
     check_assert()
 
 

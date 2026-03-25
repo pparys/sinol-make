@@ -39,4 +39,5 @@ def set_default_args(command):
     command.args = argparse.Namespace(
         compile_mode='default',
         print_expected_scores=True,
+        sanitize='no',
     )
